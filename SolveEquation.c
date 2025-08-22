@@ -2,11 +2,12 @@
 #include <float.h>
 #include <math.h>
 
-// TODO: discriminant, cntr parameter is unnecessary
-int Counting_Solutions(double a, double b, double c, int cntr, double discriminant,
+// TODO: discriminant, cntr parameter is unnecessary DONE
+int Counting_Solutions(double a, double b, double c,
                         double *p0, double *p1, double *p2) { // NOTE: is it a good idea to have separate p0 for 1 root case? // TODO: maybe a better name for p0, p1, etc? Possibly use an array, double roots[2]?
     // TODO: maybe this at the start, *p0 = *p1 = *p2 = NAN;
-    if (fabs(a) <= DBL_EPSILON) { // TODO: beware of the indentation
+    int cntr = 0
+    if (fabs(a) <= DBL_EPSILON) { // TODO: beware of the indentation DONE
             if (fabs(b) > DBL_EPSILON) {
                 cntr = 1;
                 *p0 = -1 * c / b;
@@ -23,7 +24,7 @@ int Counting_Solutions(double a, double b, double c, int cntr, double discrimina
 
                 // TODO: it's better to set roots here to NAN explicitly
             }
-        }
+    }
     else {
         discriminant = b * b - 4 * a * c;
         if (discriminant < 0) {
@@ -31,9 +32,10 @@ int Counting_Solutions(double a, double b, double c, int cntr, double discrimina
         }
         else if (discriminant > 0) {
             cntr = 2;
+            sqrt_discriminant = sqrt(b * b - 4 * a * c)
             *p0 = 0.0 / 0.0;
-            *p1 = (-1 * b + sqrt(b * b - 4 * a * c)) / (2 * a); // TODO: extract sqrt(discriminant), also you could make a variable sqrt_discriminant
-            *p2 = (-1 * b - sqrt(b * b - 4 * a * c)) / (2 * a);
+            *p1 = (-1 * b + sqrt_discriminant) / (2 * a); // TODO: extract sqrt(discriminant), also you could make a variable sqrt_discriminant DONE
+            *p2 = (-1 * b - sqrt_discriminant) / (2 * a);
         }
         else {
             cntr = 1;
@@ -65,11 +67,11 @@ void Solutions(int cntr, double x0, double x1, double x2) {
 
 // TODO: it's better to use full names when possible, prefer count over cntr
 int main() {
-    double a = 0.0, b = 0.0, c = 0.0, discriminant = 0.0, x0 = 0.0, x1 = 0.0, x2 = 0.0;
+    double a = 0.0, b = 0.0, c = 0.0, x0 = 0.0, x1 = 0.0, x2 = 0.0;
     // TODO: maybe use an array? double roots[3] = { NAN, NAN, NAN };
     int cntr_of_solutions = 0;
     scanf("%lf %lf %lf", &a, &b, &c); // TODO: scanf can fail, check
-    cntr_of_solutions = Counting_Solutions(a, b, c, cntr_of_solutions, discriminant, &x0, &x1, &x2);
+    cntr_of_solutions = Counting_Solutions(a, b, c, &x0, &x1, &x2);
     Solutions(cntr_of_solutions, x0, x1, x2);
     return 0;
 }
