@@ -12,24 +12,35 @@ void Checking_For_EOF(int flag) {
 }
 
 
+int Detecting_Scanf_Failure() {
+    int symbol = getchar();
+    if (symbol != '\n') {
+        while (getchar() != '\n');
+        return 0;
+    }
+    else {
+        return 1;
+    }
+}
+
+
 void Input_Checking(double *a, double *b, double *c) {
     double *coefficients[3] = {a, b, c};
-    int count = 0; // NOTE: checking whether scanf is working properly or not
+    int count = 0;
     for (int i = 0; i < 3; i++) {
         double intermediate_result = 0.0;
         int flag = scanf("%lf", &intermediate_result);
         Checking_For_EOF(flag);
+        flag = Detecting_Scanf_Failure();
         while (flag != 1) {
-            while (getchar() != '\n');
             printf("Input error: double number not found. Try again: ");
             flag = scanf("%lf", &intermediate_result);
             Checking_For_EOF(flag);
-            printf("flag: %d\n", flag);
+            flag = Detecting_Scanf_Failure();
         }
-        while (getchar() != '\n');
         count++;
-        printf("coeffs filled counter: %d\n", count);
         *coefficients[i] = intermediate_result;
+        printf("coefficients filled counter: %d\nroot: ", count);
     }
 }
 
