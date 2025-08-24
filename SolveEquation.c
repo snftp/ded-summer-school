@@ -3,23 +3,45 @@
 #include <math.h>
 #include <stdbool.h>
 
+
 // TODO: check 5 5 5 test
+void Checking_For_EOF(int flag) {
+    if (flag == EOF) {
+        printf("You terminated program\n");
+        exit(1);
+    }
+}
+
+
+int Detecting_Scanf_Failure() {
+    int symbol_from_buffer = getchar();
+    if (symbol_from_buffer != '\n') {
+        while (getchar() != '\n');
+        return 0;
+    }
+    else {
+        return 1;
+    }
+}
+
 
 void Input_Checking(double *a, double *b, double *c) {
-    double *coefficients[3] = {a, b, c}; // TODO: double *coefficients[3] = {a, b, c}; DONE
+    double *coefficients[3] = {a, b, c};
+    int count = 0;
     for (int i = 0; i < 3; i++) {
         double intermediate_result = 0.0;
-        int flag = scanf("%lf", &intermediate_result); // TODO: can you create flag here? DONE
-        if (flag == EOF) {
-            printf("You terminated program\n");
-            exit(1);
-        }
+        int flag = scanf("%lf", &intermediate_result);
+        Checking_For_EOF(flag);
+        flag = Detecting_Scanf_Failure();
         while (flag != 1) {
-            while (getchar() != '\n'); // TODO: what if EOF? Ctrl+D DONE
             printf("Input error: double number not found. Try again: ");
             flag = scanf("%lf", &intermediate_result);
+            Checking_For_EOF(flag);
+            flag = Detecting_Scanf_Failure();
         }
-        *coefficients[i] = intermediate_result; // TODO: check here too
+        count++;
+        *coefficients[i] = intermediate_result;
+        printf("filled coefficients counter: %d\ncoefficient: %lf\n", count, *coefficients[i]);
     }
 }
 
