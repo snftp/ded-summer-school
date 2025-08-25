@@ -3,19 +3,13 @@
 #include <math.h>
 #include <stdbool.h>
 
-
-// TODO: check 5 5 5 test
-void Checking_For_EOF(int flag) {
-    if (flag == EOF) {
-        printf("You terminated program\n");
-        exit(1);
-    }
-}
-
-
 int Detecting_Scanf_Failure() {
     int symbol_from_buffer = getchar();
-    if (symbol_from_buffer != '\n') {
+    if (symbol_from_buffer == EOF) { // TODO: What if getchar outputs EOF?
+        printf("You terminated program\n");
+        return -1; // TODO: it's better to avoid exit
+    }
+    else if (symbol_from_buffer != '\n') {
         while (getchar() != '\n');
         return 0;
     }
@@ -24,34 +18,55 @@ int Detecting_Scanf_Failure() {
     }
 }
 
+int Flag_Fixing(int *flag, double *intermediate_result) {
+    *flag = scanf("%lf", intermediate_result);
+    *flag = Detecting_Scanf_Failure();
+    if (*flag == -1) {
+            return 0;
+    }
+    else {
+        return 1;
+    }
+}
 
-void Input_Checking(double *a, double *b, double *c) {
+int Input_Checking(double *a, double *b, double *c) { // TODO: check 5 5 5 test
     double *coefficients[3] = {a, b, c};
     int count = 0;
     for (int i = 0; i < 3; i++) {
         double intermediate_result = 0.0;
-        int flag = scanf("%lf", &intermediate_result);
-        Checking_For_EOF(flag);
-        flag = Detecting_Scanf_Failure();
-        while (flag != 1) {
-            printf("Input error: double number not found. Try again: ");
-            flag = scanf("%lf", &intermediate_result);
-            Checking_For_EOF(flag);
-            flag = Detecting_Scanf_Failure();
-        }
+        int flag = 0;
+        do {
+            if (!(Flag_Fixing(&flag, &intermediate_result))) {
+                return 0;
+            }
+            if (flag != 1) {
+                printf("Input error: double number not found. Try again: ");
+            }
+        } while (flag != 1);
+        // if (!(Flag_Fixing(&flag, &intermediate_result))) {
+        //     return 0;
+        // }
+        // while (flag != 1) {
+        //     printf("Input error: double number not found. Try again: ");
+        //     if (!(Flag_Fixing(&flag, &intermediate_result))) {
+        //         return 0;
+        //     }
+        // }
         count++;
         *coefficients[i] = intermediate_result;
         printf("filled coefficients counter: %d\ncoefficient: %lf\n", count, *coefficients[i]);
     }
+    return 1;
 }
-
 
 bool Are_Same_Numbers(double number_1, double number_2) {
     return fabs(number_1 - number_2) <= DBL_EPSILON;
 }
 
-
 void Equation_Solving(double a, double b, double c, double *roots) {
+    // TODO: assert a != INF etc...
+    // TODO: either ensure that roots are equal to { NAN, NAN } with assert or initialize them explicitly
+
     double discriminant = 0.0, sqrt_discriminant = 0.0;
     // NOTE: *(ptr + i) === ptr[i] -> roots[0] = 1.0
     // NOTE: *(i + prr) === i[ptr]
@@ -61,7 +76,7 @@ void Equation_Solving(double a, double b, double c, double *roots) {
         }
         else {
             if (Are_Same_Numbers(c, 0.0)) {
-                roots[0] = INFINITY;
+                roots[0] = INFINITY; // TODO: INFINITY is more fitting for case where there are no roots but you could say that there is an INFINITE root, e.g. 0*x^2 + 0*x - 5 = 0
                 roots[1] = INFINITY;
                 // TODO: make a const that will explicitly say what this means, e.g. const int INFINITE_ROOTS = -1;
             }
@@ -83,13 +98,13 @@ void Equation_Solving(double a, double b, double c, double *roots) {
         }
     }
 }
-
-
+//-c -o
 void Solutions_Printing(double *roots) { // TODO: prefer verbs over nouns when naming functions. Print_Solution? DONE
-    if (isinf(roots[0]) && isinf(roots[1])) { // TODO: read about isnan, isinf? DONE
+    // TODO: figure out what is this: assert(roots != NULL);
+    if (isinf(roots[0]) && isinf(roots[1])) { // NOTE: it's a little bit weird that infinite number of roots is marked as an INFINITE root
         printf("INFINITE NUMBER OF ROOTS\n");
     }
-    else if (isnan(roots[0]) && isnan(roots[1])) { // TODO: this is unreachable DONE
+    else if (isnan(roots[0]) && isnan(roots[1])) {
         printf("NO ROOTS\n");
     }
     else {
@@ -101,12 +116,13 @@ void Solutions_Printing(double *roots) { // TODO: prefer verbs over nouns when n
     }
 }
 
-
-// TODO: it's better to use full names when possible, prefer count over cntr
 int main() {
     double a = 0.0, b = 0.0, c = 0.0;
     double roots[2] = { NAN, NAN };
-    Input_Checking(&a, &b, &c); // TODO: scanf can fail, check
+    // TODO: scanf can fail, check
+    if (!(Input_Checking(&a, &b, &c))) {
+        return 1;
+    }
     printf("%lf %lf %lf\n", a, b, c);
     Equation_Solving(a, b, c, roots);
     Solutions_Printing(roots);
