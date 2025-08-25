@@ -2,6 +2,21 @@
 #include <float.h>
 #include <math.h>
 #include <stdbool.h>
+#include <assert.h>
+#include "SolvingAlgorithm.h"
+
+int Flag_Fixing(int *flag, double *intermediate_result) { // TODO: read_number? Or, i your style, number_reading?
+    assert(flag != NULL);
+    assert(intermediate_result != NULL);
+    *flag = scanf("%lf", intermediate_result); // TODO: do not assign it here, you never read this value
+    *flag = Detecting_Scanf_Failure();
+    if (*flag == -1) {
+            return 0; // TODO: indentation
+    }
+    else {
+        return 1;
+    }
+}
 
 int Detecting_Scanf_Failure() {
     int symbol_from_buffer = getchar();
@@ -10,7 +25,7 @@ int Detecting_Scanf_Failure() {
         return -1; // TODO: it's better to avoid exit
     }
     else if (symbol_from_buffer != '\n') {
-        while (getchar() != '\n');
+        while (getchar() != '\n'); // TODO: you should check for EOF here
         return 0;
     }
     else {
@@ -18,18 +33,10 @@ int Detecting_Scanf_Failure() {
     }
 }
 
-int Flag_Fixing(int *flag, double *intermediate_result) {
-    *flag = scanf("%lf", intermediate_result);
-    *flag = Detecting_Scanf_Failure();
-    if (*flag == -1) {
-            return 0;
-    }
-    else {
-        return 1;
-    }
-}
-
 int Input_Checking(double *a, double *b, double *c) { // TODO: check 5 5 5 test
+    assert(a != NULL);
+    assert(b != NULL);
+    assert(c != NULL);
     double *coefficients[3] = {a, b, c};
     int count = 0;
     for (int i = 0; i < 3; i++) {
@@ -37,70 +44,22 @@ int Input_Checking(double *a, double *b, double *c) { // TODO: check 5 5 5 test
         int flag = 0;
         do {
             if (!(Flag_Fixing(&flag, &intermediate_result))) {
-                return 0;
+                return 0; // TODO: prefer true/false from stdbool.h over 1/0
             }
             if (flag != 1) {
                 printf("Input error: double number not found. Try again: ");
             }
         } while (flag != 1);
-        // if (!(Flag_Fixing(&flag, &intermediate_result))) {
-        //     return 0;
-        // }
-        // while (flag != 1) {
-        //     printf("Input error: double number not found. Try again: ");
-        //     if (!(Flag_Fixing(&flag, &intermediate_result))) {
-        //         return 0;
-        //     }
-        // }
-        count++;
+        count++; // is count == i + 1
         *coefficients[i] = intermediate_result;
         printf("filled coefficients counter: %d\ncoefficient: %lf\n", count, *coefficients[i]);
     }
     return 1;
 }
 
-bool Are_Same_Numbers(double number_1, double number_2) {
-    return fabs(number_1 - number_2) <= DBL_EPSILON;
-}
-
-void Equation_Solving(double a, double b, double c, double *roots) {
-    // TODO: assert a != INF etc...
-    // TODO: either ensure that roots are equal to { NAN, NAN } with assert or initialize them explicitly
-
-    double discriminant = 0.0, sqrt_discriminant = 0.0;
-    // NOTE: *(ptr + i) === ptr[i] -> roots[0] = 1.0
-    // NOTE: *(i + prr) === i[ptr]
-    if (Are_Same_Numbers(a, 0.0)) {
-        if (!(Are_Same_Numbers(b, 0.0))) {
-            roots[0] = -1 * c / b;
-        }
-        else {
-            if (Are_Same_Numbers(c, 0.0)) {
-                roots[0] = INFINITY; // TODO: INFINITY is more fitting for case where there are no roots but you could say that there is an INFINITE root, e.g. 0*x^2 + 0*x - 5 = 0
-                roots[1] = INFINITY;
-                // TODO: make a const that will explicitly say what this means, e.g. const int INFINITE_ROOTS = -1;
-            }
-            // NOTE: не требуется прописывать ELSE для с != 0 и b == 0 потому что значения в ROOTS останутся NAN (нет корней)
-        }
-    }
-    else {
-        discriminant = b * b - 4 * a * c;
-        // NOTE: случай discriminant < 0 не требуется прописывать потому что значения в ROOTS останутся NAN
-        if (discriminant > 0) {
-            sqrt_discriminant = sqrt(b * b - 4 * a * c);
-            roots[0] = (-1 * b + sqrt_discriminant) / (2 * a);
-            roots[1] = (-1 * b - sqrt_discriminant) / (2 * a);
-        }
-        else {
-            if (Are_Same_Numbers(discriminant, 0.0)) {
-                roots[0] = (-1 * b) / (2 * a);
-            }
-        }
-    }
-}
-//-c -o
 void Solutions_Printing(double *roots) { // TODO: prefer verbs over nouns when naming functions. Print_Solution? DONE
     // TODO: figure out what is this: assert(roots != NULL);
+    assert(roots != NULL);
     if (isinf(roots[0]) && isinf(roots[1])) { // NOTE: it's a little bit weird that infinite number of roots is marked as an INFINITE root
         printf("INFINITE NUMBER OF ROOTS\n");
     }
@@ -123,8 +82,12 @@ int main() {
     if (!(Input_Checking(&a, &b, &c))) {
         return 1;
     }
-    printf("%lf %lf %lf\n", a, b, c);
+    assert((a != INFINITY) && (a != NAN)); // TODO: a != NAN doesn't work, use isnan, isinf and/or isfinite?
+    assert((b != INFINITY) && (b != NAN));
+    assert((c != INFINITY) && (c != NAN));
+    printf("%lg %lg %lg\n", a, b, c);
     Equation_Solving(a, b, c, roots);
     Solutions_Printing(roots);
     return 0;
+    // -c -o
 }
