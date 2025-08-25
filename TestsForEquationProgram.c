@@ -15,16 +15,12 @@ void Test_Running(Equation_Elements data) {}
     }
 
 void Tests_Calls() {
-    Equation_Elements data[] = {{}, {}, {}}; // { .a =, .b =, .c =, ?? .expected_roots = {x_1, x_2} };
+    int successful_runs_count = 0;
+    Equation_Elements data[] = {{}, {}, {}}; // { .a =, .b =, .c =, .expected_roots = {x_1, x_2} };
     const size = sizeof(data) / sizeof(data[0]);
     for (int i = 0; i < size; i++) {
-    /* count_successful += */Testing_Result(data[i]);
+        successful_runs_count += Testing_Result(data[i]);
     }
+    printf("Overall results: %d/%d called runs completed successfully\n", successful_runs_count, size);
 }
-
-// int Testing_Result(result) { // counts the amount of successful/failed test runs (if only Test_Running gave 1/0)
-//     int successful_runs = 0; // int failed_runs = 0;
-//     successful_runs += result; // failed_runs += (!(Test_Running(........)));
-//     return successful_runs;
-// }
 
