@@ -8,40 +8,44 @@ struct Equation_Elements {
     double expected_roots[2];
 };
 
-// void are_numbers_equal(double a, double b) {
-//     if (isnan(a) ^ isnan(b) || isinf(a) ^ isinf(b))
-//         return false;
-//
-//     if (isnan(a) && isnan(b) || isinf(a) && isinf(b))
-//         return true;
-//
-//     return fabs(a - b) < EPS;
-// }
+int Are_Numbers_Special_Values(double roots[2]) {
+    if (isnan(roots[0]) && isnan(roots[1])) {
+        return 1; // two nans expected
+    }
+    else if (isinf(roots[0]) && isinf(roots[1])) {
+        return 2; // two infs expected
+    }
+    else if (isnan(roots[0]) ^ isnan(roots[1])) {
+        return 3; // one nan other not nan expected
+    }
+    else {
+        return 4; // no nans neither infs expected
+    }
+}
 
 int Test_Running(Equation_Elements data) {
     double obtained_roots[2] = { NAN, NAN };
     Equation_Solving(data.a, data.b, data.c, obtained_roots);
-    // two nans expected
-    if (isnan(data.expected_roots[0]) && isnan(data.expected_roots[1])) {
-        if  {
+    if (Are_Numbers_Special_Values(data.expected_roots) == 1) {
+        if (!(Are_Numbers_Special_Values(obtained_roots) == 1)) {
             printf("FAILURE\n coefficients: %lf, %lf, %lf\n expected results: %lf, %lf\n obtained results: %lf, %lf\n\n", data.a, data.b, data.c, data.expected_roots[0], data.expected_roots[1], obtained_roots[0], obtained_roots[1]);
             return 0;
         }
-    } // two infs expected
-    else if (isinf(data.expected_roots[0]) && isinf(data.expected_roots[1])) {
-        if  {
+    }
+    else if (Are_Numbers_Special_Values(data.expected_roots) == 2) {
+        if (!(Are_Numbers_Special_Values(obtained_roots) == 2)) {
             printf("FAILURE\n coefficients: %lf, %lf, %lf\n expected results: %lf, %lf\n obtained results: %lf, %lf\n\n", data.a, data.b, data.c, data.expected_roots[0], data.expected_roots[1], obtained_roots[0], obtained_roots[1]);
             return 0;
         }
-    } // one nan other not nan expected
-    else if  {
-        if  {
+    }
+    else if (Are_Numbers_Special_Values(data.expected_roots) == 3) {
+        if (!(Are_Numbers_Special_Values(obtained_roots) == 3)) {
             printf("FAILURE\n coefficients: %lf, %lf, %lf\n expected results: %lf, %lf\n obtained results: %lf, %lf\n\n", data.a, data.b, data.c, data.expected_roots[0], data.expected_roots[1], obtained_roots[0], obtained_roots[1]);
             return 0;
         }
-    } // no nans neither infs expected
+    }
     else {
-        if  {
+        if (Are_Numbers_Special_Values(obtained_roots) == 4 && (!((Are_Same_Numbers(obtained_roots[0], data.expected_roots[0]) || Are_Same_Numbers(obtained_roots[0], data.expected_roots[1])) && (Are_Same_Numbers(obtained_roots[1], data.expected_roots[0]) || Are_Same_Numbers(obtained_roots[1], data.expected_roots[1]))))) {
             printf("FAILURE\n coefficients: %lf, %lf, %lf\n expected results: %lf, %lf\n obtained results: %lf, %lf\n\n", data.a, data.b, data.c, data.expected_roots[0], data.expected_roots[1], obtained_roots[0], obtained_roots[1]);
             return 0;
         }
