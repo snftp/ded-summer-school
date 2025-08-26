@@ -1,3 +1,6 @@
+#ifndef SOLVE_ALGO
+#define SOLVE_ALGO
+
 // TODO: header guard, K&R
 
 // They (header guards) prevent duplication of A.h in such cases:
@@ -6,3 +9,5 @@
 
 bool Are_Same_Numbers(double number_1, double number_2);
 void Equation_Solving(double a, double b, double c, double *roots);
+
+#endif

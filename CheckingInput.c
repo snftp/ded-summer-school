@@ -3,8 +3,6 @@
 #include <math.h>
 #include <stdbool.h>
 #include <assert.h>
-#include "SolvingAlgorithm.h"
-#include "TestsForEquationProgram.h"
 
 bool Checking_For_EOF(int symbol_from_buffer) {
     do {
@@ -64,27 +62,9 @@ bool Input_Checking(double *a, double *b, double *c) { // TODO: check 5 5 5 test
     return true;
 }
 
-void Solutions_Printing(double *roots) { // TODO: prefer verbs over nouns when naming functions. Print_Solution? DONE
-    // TODO: figure out what is this: assert(roots != NULL);  DONE
-    assert(roots != NULL);
-    if (isinf(roots[0]) && isinf(roots[1])) { // NOTE: it's a little bit weird that infinite number of roots is marked as an INFINITE root
-        printf("INFINITE NUMBER OF ROOTS\n");
-    }
-    else if (isnan(roots[0]) && isnan(roots[1])) {
-        printf("NO ROOTS\n");
-    }
-    else {
-        for (int i = 0; i < 2; i++) {
-            if (!isnan(roots[i])) {
-                printf("ROOT(S): %lf\n", roots[i]);
-            }
-        }
-    }
-}
-
 int main() {
     double a = 0.0, b = 0.0, c = 0.0;
-    double roots[2] = { NAN, NAN };
+    // double roots[2] = { NAN, NAN };
     // TODO: scanf can fail, check
     if (!(Input_Checking(&a, &b, &c))) {
         return 1;
@@ -93,8 +73,5 @@ int main() {
     assert((!(isinf(b))) && (!(isnan(b))));
     assert((!(isinf(c))) && (!(isnan(c))));
     printf("%lg %lg %lg\n", a, b, c);
-    Equation_Solving(a, b, c, roots);
-    Solutions_Printing(roots);
-    Tests_Calls();
     return 0;
 }

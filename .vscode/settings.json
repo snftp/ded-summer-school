@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "testsforequationprogram": "c",
+        "queue": "c",
+        "stack": "c",
+        "testsforequationprogram.h": "c"
+    }
+}
