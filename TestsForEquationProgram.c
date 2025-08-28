@@ -10,16 +10,16 @@ struct Equation_Elements {
 
 int Are_Numbers_Special_Values(double roots[2]) {
     if (isnan(roots[0]) && isnan(roots[1])) {
-        return 1; // two nans expected
+        return 1; // two nans expected (no roots)
     }
     else if (isinf(roots[0]) && isinf(roots[1])) {
-        return 2; // two infs expected
+        return 2; // two infs expected (infinite number of roots)
     }
     else if (isnan(roots[0]) ^ isnan(roots[1])) {
-        return 3; // one nan other not nan expected
+        return 3; // one nan other not nan expected (1 root)
     }
     else {
-        return 4; // no nans neither infs expected
+        return 4; // no nans neither infs expected (2 roots)
     }
 }
 
