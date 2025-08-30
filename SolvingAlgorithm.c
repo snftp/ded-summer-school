@@ -11,14 +11,13 @@ bool Are_Same_Numbers(double number_1, double number_2) {
 }
 
 void Equation_Solving(double a, double b, double c, double *roots) {
-    // TODO: assert(a is not NAN)? DONE
     assert(roots != NULL);
     assert(isnan(roots[0]));
-    assert(isnan(roots[1]));  // TODO: split assert into multiple asserts DONE
+    assert(isnan(roots[1]));
     double discriminant = 0.0, sqrt_discriminant = 0.0;
     if (Are_Same_Numbers(a, 0.0)) {
         if (!(Are_Same_Numbers(b, 0.0))) {
-            roots[0] = -1 * c / b;
+            roots[1] = -1 * c / b; // NOTE: roots[0] maintain NAN
         }
         else {
             if (Are_Same_Numbers(c, 0.0)) {
@@ -39,7 +38,7 @@ void Equation_Solving(double a, double b, double c, double *roots) {
         }
         else {
             if (Are_Same_Numbers(discriminant, 0.0)) {
-                roots[0] = (-1 * b) / (2 * a);
+                roots[1] = (-1 * b) / (2 * a); // NOTE: roots[0] maintain NAN
             }
         }
     }

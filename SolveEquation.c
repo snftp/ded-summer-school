@@ -3,8 +3,18 @@
 #include <math.h>
 #include <stdbool.h>
 #include <assert.h>
+
+#ifndef RUNTEST
 #include "SolvingAlgorithm.h"
+struct Equation_Elements {
+    double a, b, c;
+    double roots[2];
+};
+#endif
+
+#ifdef RUNTEST
 #include "TestsForEquationProgram.h"
+#endif
 
 bool Checking_For_EOF(int symbol_from_buffer) {
     do {
@@ -32,7 +42,7 @@ int Detecting_Scanf_Failure() {
 int Number_Reading(int *flag, double *intermediate_result) { // TODO: read_number? Or, i your style, number_reading? DONE
     assert(flag != NULL);
     assert(intermediate_result != NULL);
-    scanf("%lf", intermediate_result); // TODO: do not assign it here, you never read this value DONE
+    scanf("%lf", intermediate_result);
     *flag = Detecting_Scanf_Failure();
     if (*flag == -1) {
         return 0;
@@ -42,7 +52,7 @@ int Number_Reading(int *flag, double *intermediate_result) { // TODO: read_numbe
     }
 }
 
-bool Input_Checking(double *a, double *b, double *c) { // TODO: check 5 5 5 test
+bool Input_Checking(double *a, double *b, double *c) {
     assert(a != NULL);
     assert(b != NULL);
     assert(c != NULL);
@@ -52,7 +62,7 @@ bool Input_Checking(double *a, double *b, double *c) { // TODO: check 5 5 5 test
         int flag = 0;
         do {
             if (!(Number_Reading(&flag, &intermediate_result))) {
-                return false; // TODO: prefer true/false from stdbool.h over 1/0 DONE
+                return false; // TODO: prefer true/false from stdbool.h over 1/0
             }
             if (flag != 1) {
                 printf("Input error: double number not found. Try again: ");
@@ -65,7 +75,6 @@ bool Input_Checking(double *a, double *b, double *c) { // TODO: check 5 5 5 test
 }
 
 void Solutions_Printing(double *roots) { // TODO: prefer verbs over nouns when naming functions. Print_Solution? DONE
-    // TODO: figure out what is this: assert(roots != NULL);  DONE
     assert(roots != NULL);
     if (isinf(roots[0]) && isinf(roots[1])) { // NOTE: it's a little bit weird that infinite number of roots is marked as an INFINITE root
         printf("INFINITE NUMBER OF ROOTS\n");
@@ -83,18 +92,23 @@ void Solutions_Printing(double *roots) { // TODO: prefer verbs over nouns when n
 }
 
 int main() {
-    double a = 0.0, b = 0.0, c = 0.0;
-    double roots[2] = { NAN, NAN };
-    // TODO: scanf can fail, check
-    if (!(Input_Checking(&a, &b, &c))) {
+
+#ifndef RUNTEST // NOTE: g++ded -DRUNTEST SolveEquation.c -o SolveEquation.o; -D flag defines a macro at compile time.
+    struct Equation_Elements equation_components = { .a = 0.0, .b = 0.0, .c = 0.0, .roots = { NAN, NAN } };
+    if (!(Input_Checking(&equation_components.a, &equation_components.b, &equation_components.c))) { // TODO: scanf can fail, check
         return 1;
     }
-    assert((!(isinf(a))) && (!(isnan(a)))); // TODO: a != NAN doesn't work, use isnan, isinf and/or isfinite? DONE
-    assert((!(isinf(b))) && (!(isnan(b))));
-    assert((!(isinf(c))) && (!(isnan(c))));
-    printf("%lg %lg %lg\n", a, b, c);
-    Equation_Solving(a, b, c, roots);
-    Solutions_Printing(roots);
-    Tests_Calls();
+    assert((!(isinf(equation_components.a))) && (!(isnan(equation_components.a))));
+    assert((!(isinf(equation_components.b))) && (!(isnan(equation_components.b))));
+    assert((!(isinf(equation_components.c))) && (!(isnan(equation_components.c))));
+    printf("%lg %lg %lg\n", equation_components.a, equation_components.b, equation_components.c);
+    Equation_Solving(equation_components.a, equation_components.b, equation_components.c, equation_components.roots);
+    Solutions_Printing(equation_components.roots);
+#endif
+
+#ifdef RUNTEST
+    Tests_Calling();
+#endif
+
     return 0;
 }

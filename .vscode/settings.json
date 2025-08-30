@@ -3,6 +3,7 @@
         "testsforequationprogram": "c",
         "queue": "c",
         "stack": "c",
-        "testsforequationprogram.h": "c"
+        "testsforequationprogram.h": "c",
+        "solvingalgorithm.h": "c"
     }
 }
